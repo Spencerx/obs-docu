@@ -675,7 +675,7 @@ rebuild_master:
             Package links do not run the services. Use the <emphasis>branch_package</emphasis> step instead.</para>
           </note>
         </sect4>
-        
+
         <sect4 xml:id="sec-obs-obs-scm-ci-workflow-integration-obs-workflows-steps-link-project">
           <title>Link a Project</title>
 
@@ -688,6 +688,10 @@ rebuild_master:
               <para><emphasis>home:jane:github:jane:open-build-service:PR-1</emphasis>
               for a pull request event. <emphasis>1</emphasis> being the pull request number.</para>
             </listitem>
+            <listitem>
+              <para><emphasis>home:jane</emphasis>
+              for a push or tag push event.</para>
+            </listitem>
           </itemizedlist>
 
           <para>This is an example of a configuration file with a link project step:</para>
@@ -696,7 +700,19 @@ rebuild_master:
   steps:
     - link_project:
         source_project: openSUSE:Factory
-        target_project: home:jane</screen>
+        target_project: home:jane
+    - configure_repositories:
+        project: home:jane
+        repositories:
+          - name: openSUSE_Tumbleweed
+            paths:
+              - target_project: openSUSE:Tumbleweed
+                target_repository: standard
+            architectures:
+              - x86_64
+            rebuild: direct
+            linkedbuild: all
+     </screen>
         </sect4>
 
         <sect4 xml:id="sec-obs-obs-scm-ci-workflow-integration-obs-workflows-steps-configure-repositories-architectures-for-a-project">
@@ -736,6 +752,21 @@ rebuild_master:
               <para>a list of architectures to be defined for each repository.
               e.g.: <emphasis>x86_64</emphasis> and
               <emphasis>i586</emphasis></para>
+            </listitem>
+
+            <listitem>
+              <para>(Optional) a <emphasis>rebuild</emphasis> policy, which defines the
+              rebuilding policy for packages in this repository. Allowed values are:
+              <emphasis>transitive</emphasis>, <emphasis>direct</emphasis> and
+              <emphasis>local</emphasis>.</para>
+            </listitem>
+
+            <listitem>
+              <para>(Optional) a <emphasis>linkedbuild</emphasis> setting, which defines
+              how packages from project links are built. Allowed values are:
+              <emphasis>off</emphasis>, <emphasis>all</emphasis>,
+              <emphasis>localdep</emphasis>, <emphasis>alldirect</emphasis> and
+              <emphasis>alldirect_or_localdep</emphasis>.</para>
             </listitem>
           </itemizedlist>
 
@@ -1556,7 +1587,8 @@ test_build:
               Nothing will be reported to the SCM.
             </entry>
             <entry><!-- link_project -->
-              The link remains intact.
+              Create a link from <envar>%{source_project}</envar>
+              to <envar>%{target_project}</envar>.
             </entry>
           </row>
 
@@ -1593,7 +1625,8 @@ test_build:
               Nothing will be reported to the SCM.
             </entry>
             <entry><!-- link_project -->
-              The link remains intact.
+              Create a link from <envar>%{source_project}</envar>
+              to <envar>%{target_project}</envar>.
             </entry>
           </row>
         </tbody>
