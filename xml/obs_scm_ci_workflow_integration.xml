@@ -1389,7 +1389,7 @@ test_build:
 
     <table>
       <title>Workflow Steps reference table</title>
-      <tgroup align="left" cols="8">
+      <tgroup align="left" cols="9">
         <thead>
           <row>
             <entry>SCM event and action</entry>
